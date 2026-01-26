@@ -166,8 +166,6 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
             if sz > buff:
                 self.rxthread.terminate()
                 for i in range(math.ceil(sz/buff)):
-                    # vol = vol+len(pack[buff*i:buff*i+buff])
-                    # print(vol)
                     loradev.send(outbytes[buff*i:buff*i+buff])
                     time.sleep(0.15)
                 self.rxthread.start()
