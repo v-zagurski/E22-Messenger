@@ -22,7 +22,7 @@ st = (
     'QGroupBox::title { subcontrol-origin: margin; left: 9px; } '
     'QLabel { color: black; background-color: '
     + br1
-    + '; font-family: "Times New Roman"; font-size: 14px; } '
+    + '; font-family: "Times New Roman"; font-size: 16px; } '
 
     'QLineEdit { color: black; background-color: '
     + br1
@@ -30,7 +30,7 @@ st = (
     + br3
     + '; selection-color: '
     + br1
-    + '; font-family: "Times New Roman"; font-size: 14px; '
+    + '; font-family: "Times New Roman"; font-size: 16px; '
     'border: 1px solid grey; border-radius: 5px; } '
 
     'QTextBrowser { color: black; background-color: '
@@ -39,7 +39,7 @@ st = (
     + br3
     + '; selection-color: '
     + br1
-    + '; font-family: "Times New Roman"; font-size: 14px; '
+    + '; font-family: "Times New Roman"; font-size: 16px; '
     'border-width: 1px solid grey; border-radius: 5px; } '
 
     'QTextEdit { color: black; background-color: '
@@ -48,7 +48,7 @@ st = (
     + br3
     + '; selection-color: '
     + br1
-    + '; font-family: "Times New Roman"; font-size: 14px; '
+    + '; font-family: "Times New Roman"; font-size: 16px; '
     'border: 1px solid grey; border-radius: 5px; } '
 
     'QComboBox { color: black; background-color: '
