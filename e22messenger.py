@@ -26,7 +26,7 @@ start = None
 
 def show_error(in1, in2, in3):
     msg_box = QMessageBox()
-    msg_box.setIcon(QMessageBox.Critical)
+    msg_box.setIcon(QMessageBox.Icon.Critical)
     msg_box.setWindowTitle(f"{in1}")
     msg_box.setText(f"Ошибка! {in2}")
     QtCore.QTimer.singleShot(3000, msg_box.close)
