@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Dec 22 14:26:24 2025
-
-@author: user
-"""
-
 import sys
 import os
 import time
@@ -17,12 +10,10 @@ from lora_gui import Ui_LoraWindow
 from E22 import E22, Config
 from styler import styler
 
-os.environ['QT_ENABLE_HIGHDPI_SCALING'] = '0'
-
-loradev = None
+loradev: E22 | None = None
 cfg = Config()
-barray = bytearray()
-start = None
+barray: bytearray = bytearray()
+start: float | None = None
 
 def show_error(in1, in2, in3):
     msg_box = QMessageBox()
@@ -162,7 +153,7 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
             # print(sz)
             buff = 64
             # vol = 0
-            self.setCursor(QtCore.Qt.WaitCursor)
+            self.setCursor(QtCore.Qt.CursorShape.WaitCursor)
             if sz > buff:
                 self.rxthread.terminate()
                 for i in range(math.ceil(sz/buff)):
@@ -171,7 +162,7 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
                 self.rxthread.start()
             else:
                 loradev.send(outbytes)
-            self.setCursor(QtCore.Qt.ArrowCursor)
+            self.setCursor(QtCore.Qt.CursorShape.ArrowCursor)
             curtext =  self.txt_rx.toPlainText()
             a = message.replace('$>', '')
             b = a.replace('<$', '')
@@ -181,7 +172,7 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
                                 f'--- {dstr} Отправлено: \n'
                                 f'{b} \n'
                                 '--- \n')
-            self.txt_rx.verticalScrollBar().setValue(self.txt_rx.verticalScrollBar().maximum())
+            self.txt_rx.moveCursor(QtGui.QTextCursor.MoveOperation.End)
 
     def sendping(self):
         if loradev is not None:
@@ -192,10 +183,6 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
                 case True:
                     self.rxthread.terminate()
                     self.pingthread.start()
-
-    def clear(self):
-        self.txt_rx.clear()
-        self.txt_control.clear()
 
     def updaterx(self, inp):
         global barray, start
@@ -212,7 +199,7 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
                             f'--- {dstr} Получено: \n'
                             f'{b} \n'
                             '--- \n')
-        self.txt_rx.verticalScrollBar().setValue(self.txt_rx.verticalScrollBar().maximum())
+        self.txt_rx.moveCursor(QtGui.QTextCursor.MoveOperation.End)
         if start is not None:
             self.txt_control.setText(f'--- {dstr} \n'
                                      '\n'
@@ -231,6 +218,9 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
         if start is None:
             start = time.time()
         self.gr_rx.setEnabled(False)
+        self.txt_control.setText(f'--- {dstr} \n'
+                                 '\n'
+                                 'Идет прием сообщения...')
 
     def updateping(self, inp):
         dstr = str(dt.datetime.now())[0:-7]
@@ -239,6 +229,10 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
         self.txt_rx.setText(f'--- {dstr} \n'
                             f'{message[1]} \n'
                             '--- \n')
+
+    def clear(self):
+        self.txt_rx.clear()
+        self.txt_control.clear()
 
 sys.excepthook = show_error
 
