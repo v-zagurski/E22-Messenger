@@ -216,6 +216,7 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
         global start
         if start is None:
             start = time.time()
+        dstr = str(dt.datetime.now())[0:-7]
         self.gr_rx.setEnabled(False)
         self.txt_control.setText(f'--- {dstr} \n'
                                  '\n'
