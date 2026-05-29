@@ -5,14 +5,15 @@ import math
 from serial.tools import list_ports
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
-from lora_gui import Ui_LoraWindow
-from E22 import E22, Config
-from styler import styler
+from _gui.mainwindow import Ui_MainWindow
+from _core.E22 import E22, Config
+from _func.styler import styler
 
 loradev: E22 | None = None
 cfg = Config()
 barray: bytearray = bytearray()
 start: float | None = None
+logfile: str = ''
 
 def show_error(in1, in2, in3):
     msg_box = QMessageBox()
@@ -75,12 +76,11 @@ class RxThread(QtCore.QThread):
     def stop(self):
         self._running = False
 
-class LoraWindow(QMainWindow, Ui_LoraWindow):
+class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.setWindowTitle('E22 Messenger')
-        self.setFont(QtGui.QFont('Times New Roman'))
+        self.setWindowTitle('E22-Messenger')
 
         self.rxthread = RxThread()
         self.rxthread.message.connect(self.updaterx)
@@ -104,12 +104,15 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
                 self.cmb_port.addItem(port.device)
 
     def loraconnect(self):
-        global loradev, cfg
+        global loradev, cfg, logfile
         port = self.cmb_port.currentText()
         match self.b_connect.isChecked():
             case True:
                 if len(port) != 0:
                     loradev = E22(port)
+                    logfile = 'logs/'+f'{str(dt.datetime.now())[0:-7]}.log'
+                    with open(logfile, 'w', encoding='utf-8') as file:
+                        file.write(f'--- Started message logging at {str(dt.datetime.now())[0:-7]} --- \n')
             case False:
                 if loradev is not None:
                     self.rxthread.terminate()
@@ -168,9 +171,14 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
             dstr = str(dt.datetime.now())[0:-7]
             self.txt_tx.clear()
             self.txt_rx.setText(f'{curtext} \n'
-                                f'--- {dstr} Отправлено: \n'
+                                f'--- {dstr} Sended: \n'
                                 f'{b} \n'
                                 '--- \n')
+            with open(logfile, 'a', encoding='utf-8') as file:
+                file.write(f'{curtext} \n'
+                            f'--- {dstr} Sended: \n'
+                            f'{b} \n'
+                            '--- \n')
             self.txt_rx.moveCursor(QtGui.QTextCursor.MoveOperation.End)
 
     def sendping(self):
@@ -195,22 +203,27 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
         dstr = str(dt.datetime.now())[0:-7]
         self.gr_rx.setEnabled(True)
         self.txt_rx.setText(f'{curtext} \n'
-                            f'--- {dstr} Получено: \n'
+                            f'--- {dstr} Received: \n'
                             f'{b} \n'
                             '--- \n')
+        with open(logfile, 'a', encoding='utf-8') as file:
+            file.write(f'{curtext} \n'
+                        f'--- {dstr} Received: \n'
+                        f'{b} \n'
+                        '--- \n')
         self.txt_rx.moveCursor(QtGui.QTextCursor.MoveOperation.End)
         if start is not None:
             self.txt_control.setText(f'--- {dstr} \n'
                                      '\n'
-                                     f'Получено: {rxsize} Байт; \n'
-                                     f'Потеряно: {txsize-rxsize} Байт; \n'
-                                     f'Время передачи: {round(time.time()-start,2)} c.')
+                                     f'Received: {rxsize} Bytes; \n'
+                                     f'Lost: {txsize-rxsize} Bytes; \n'
+                                     f'Transmission time: {round(time.time()-start,2)} s.')
             start = None
         else:
             self.txt_control.setText(f'--- {dstr} \n'
                                      '\n'
-                                     f'Получено: {rxsize} Байт; \n'
-                                     f'Потеряно: {txsize-rxsize} Байт. \n')
+                                     f'Received: {rxsize} Bytes; \n'
+                                     f'Lost: {txsize-rxsize} Bytes. \n')
 
     def pauserx(self):
         global start
@@ -220,7 +233,7 @@ class LoraWindow(QMainWindow, Ui_LoraWindow):
         self.gr_rx.setEnabled(False)
         self.txt_control.setText(f'--- {dstr} \n'
                                  '\n'
-                                 'Идет прием сообщения...')
+                                 'Receiving a message...')
 
     def updateping(self, inp):
         dstr = str(dt.datetime.now())[0:-7]
@@ -243,7 +256,7 @@ else:
 
 styler(app)
 
-lw = LoraWindow()
+lw = MainWindow()
 lw.show()
 
 sys.exit(app.exec())

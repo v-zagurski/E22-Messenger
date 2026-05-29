@@ -1,9 +1,6 @@
 import time
-
 import serial
-
-from utils import set_bit, set_bits
-
+from _core.utils import set_bit, set_bits
 
 class Config:
     def __init__(self, model='400T22U'):
@@ -142,7 +139,6 @@ class Config:
         assert len(key) == 2
         # CRYPT_H and CRYPT_L
         self.crypt = key[0:2]
-
 
 class E22:
     def __init__(self, serial_port, baudrate=9600, timeout=1):
