@@ -95,7 +95,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.b_message.clicked.connect(self.sendtext)
         self.b_ping.clicked.connect(self.sendping)
         self.b_clear.clicked.connect(self.clear)
-        self.b_file.clicked.connect(self.scroll)
+        # self.b_file.clicked.connect(self.scroll)
 
     def refresh(self):
         ports = list_ports.comports()
@@ -247,7 +247,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.txt_rx.clear()
         self.txt_control.clear()
 
-# sys.excepthook = show_error
+sys.excepthook = show_error
 
 if not QApplication.instance():
     app = QApplication(sys.argv)
