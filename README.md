@@ -1,2 +1,3 @@
-This project is a GUI-based app fot texting via E22 LoRa modules.
-Credits: https://github.com/Cyril-Meyer/E22-xxxT22U.git 
+A GUI-based app for texting and file exchanging via E22-xxxT22x LoRa modules.
+
+Credit: https://github.com/Cyril-Meyer/E22-xxxT22U.git
