@@ -110,7 +110,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             case True:
                 if len(port) != 0:
                     loradev = E22(port)
-                    logfile = 'logs/'+f'{str(dt.datetime.now())[0:-7]}.log'
+                    logfile = 'logs/'+f'{str(dt.datetime.now())[0:-10]}.log'.replace(' ','_').replace(':','-')
                     with open(logfile, 'w', encoding='utf-8') as file:
                         file.write(f'--- Started message logging at {str(dt.datetime.now())[0:-7]} --- \n')
             case False:
@@ -247,7 +247,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.txt_rx.clear()
         self.txt_control.clear()
 
-sys.excepthook = show_error
+# sys.excepthook = show_error
 
 if not QApplication.instance():
     app = QApplication(sys.argv)
